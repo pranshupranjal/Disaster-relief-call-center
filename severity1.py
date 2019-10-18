@@ -5,6 +5,7 @@
 # All imports start
 
 import speech_recognition as sr
+from textblob import TextBlob
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing, neighbors
@@ -17,7 +18,7 @@ from sklearn.model_selection import cross_validate
 # All imports end
 
 # Read names of all(most of them anyways) cities of India
-city_freq = pd.read_csv('data.csv')
+city_freq = pd.read_csv('processed_data/indian_cities.csv')
 
 # list of all the cities present in the database
 city_list = list(city_freq.City)
@@ -26,9 +27,9 @@ city_list = list(city_freq.City)
 food_words = ['food', 'hungry', 'apples', 'samples',
               'eat', 'drink', 'bread', 'refreshments']
 medical_words = ['medicine', 'hospital', 'bandages', 'dead', 'splint',
-                 'dose', 'doctor', 'nurse', 'bleeding', 'cut', 'injury', 'amputate', 'drug','inflammation']
+                 'dose', 'doctor', 'nurse', 'bleeding', 'cut', 'injury', 'amputate', 'drug', 'inflammation']
 rescue_words = ['rescue', 'stuck', 'flood', 'take', 'save',
-                'emergency', 'injury', 'survivor', 'dead', 'wreck']
+                'emergency', 'injury', 'survivor', 'dead', 'wreck', 'cyclone', 'landslide']
 
 # Speech to Text portion
 
@@ -43,16 +44,40 @@ rescue_words = ['rescue', 'stuck', 'flood', 'take', 'save',
 # isaid = r.recognize_google(audio)
 
 # take care of commas after the words
-isaid = "I am from vellore please i need medicine and want to go to the hospital . Please I'm hungry i need food please rescue"
+# isaid = "I am from vellore please i need medicine and want to go to the hospital . Please I'm hungry i need food please rescue"
+isaid = "I am from Jhansi . Please i have not eaten anything and need medicine and food and urgently need to go to the hospital"
+
+# Text Blob
+blob = TextBlob(isaid)
+# NLP POS Tags
+print("Part of Speech Tagging:\n")
+for words, tags in blob.tags:
+    print(words + " --> " + tags)
+print()
+
+# print Noun phrases
+print("\nNoun Phrases:\n")
+for phrases in blob.noun_phrases:
+    print(phrases)
+print()
+
+# Lemmatization
+print("Lemmatization of words(Verbs and Adjectives only):")
+for words, tags in blob.tags:
+    if tags == "VB":  # Verb
+        print(words + " --> " + words.lemmatize("v"))
+    elif tags == "JJ":  # Adjective
+        print(words + " --> " + words.lemmatize("a"))
+
 
 list_of_words = isaid.split(" ")
 said_cities = []
 
-print("Call converted to text : "+isaid)
+print("\nCall converted to text : " + isaid)
 
 # Just for Check:
-# print("list of word",list_of_words)
-# print("city list",city_list)
+# print("\nlist of word", list_of_words)
+# print("\ncity list", city_list)
 
 # Find from where the call has been recieved
 for word in list_of_words:
@@ -64,15 +89,15 @@ for word in list_of_words:
 
 said_cities = set(said_cities)
 
-print("Location of the Victim : " + str(said_cities))
+print("\nLocation of the Victim : " + str(said_cities))
 
 # Updating city numbers in csv file to calculate severity 2
 for city in said_cities:
-    # Finding index of the city in the csv file data.csv
+    # Finding index of the city in the csv file - indian_cities.csv
     index_city = city_list.index(city.lower())
     city_freq.loc[index_city,
                   'number'] = city_freq.loc[index_city, 'number'] + 1
-city_freq.to_csv('data.csv', index=False)
+city_freq.to_csv('processed_data/indian_cities.csv', index=False)
 
 # Calculating severity1 for every call and adding in another dataset , for that we have to train for severity 1
 
@@ -91,7 +116,8 @@ clf = neighbors.KNeighborsClassifier()
 clf.fit(X_train, y_train)
 
 accuracy = clf.score(X_test, y_test)
-print("Accuracy in finding the Severity of the call is : " + str(accuracy*100) + "%")
+print("\nAccuracy in finding the Severity of the call is : " +
+      str(accuracy*100) + "%")
 
 # Considering the values in binary
 f = 0  # food
@@ -112,14 +138,14 @@ parameters = parameters.reshape(len(parameters), -1)
 severity1 = (clf.predict(parameters))[0]
 
 # Print severity of this particular call
-print("Severity of this call : " + str(severity1))
+print("\nSeverity of this call : " + str(severity1))
 
 # Append this call details (city, severity) to the city_sev1 file
 city_sev1_df = pd.read_csv('city_sev1.csv')
 index = len(city_sev1_df)
 
 # Considering that the first city mentioned by the user is where he/she resides
-city_sev1_df.loc[index, 'City'] = list(said_cities)[0]
+city_sev1_df.loc[index, 'City'] = list(said_cities)[0].lower()
 city_sev1_df.loc[index, 'Severity1'] = severity1
 
 # Push to csv file

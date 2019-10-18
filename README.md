@@ -8,11 +8,15 @@ A disaster relief call center project using KNN algorithm and some NLP tools
 
 To activate the environment
 
-    >bin/Scripts/Activate
+    >env\Scripts\Activate
 
 To deactivate the environment
 
     >Deactivate
+
+## What all to set up before
+
+    >python -m textblob.download_corpora
 
 ## How to run the project
 

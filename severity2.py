@@ -20,7 +20,7 @@ from sklearn.model_selection import cross_validate
 # Read Severity1
 severity1_df = pd.read_csv('city_sev1.csv')
 # Read number of calls
-city_frequency = pd.read_csv('data.csv')
+city_frequency = pd.read_csv('processed_data/indian_cities.csv')
 average_sev_list = []
 index = 0
 
@@ -42,8 +42,8 @@ print("Accuracy while finding the Final Severity of the place is : " +
       str(accuracy*100) + "%")
 
 for i in range(len(city_frequency)):
-    if (city_frequency['number'][i] != 0):
-        c = city_frequency['City'][i]
+    if (city_frequency['number'][i] != 0):  # If calls were made from a city
+        c = city_frequency['City'][i]  # Store number of calls
         sev_sum = 0
         avg_sev = 0
         for k in range(len(severity1_df)):
