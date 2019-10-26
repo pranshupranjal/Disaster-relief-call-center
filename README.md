@@ -47,3 +47,5 @@ This is the severity of each call received at the call center.
 ### What is Severity 2
 
 This is the severity per city of combined calls received at the call center.
+
+[![ForTheBadge built-by-developers](https://ForTheBadge.com/images/badges/built-by-developers.svg)](https://github.com/pranshupranjal)
