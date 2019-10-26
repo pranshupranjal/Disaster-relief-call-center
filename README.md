@@ -16,6 +16,12 @@ To deactivate the environment
 
 ## What all to set up before
 
+    >pip install pandas
+    >pip install numpy
+    >pip install scikit-learn
+    >pip install PyAudio
+    >pip install SpeechRecognition
+    >pip install textblob
     >python -m textblob.download_corpora
 
 ## How to run the project
