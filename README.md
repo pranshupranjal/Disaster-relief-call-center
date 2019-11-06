@@ -23,6 +23,9 @@ To deactivate the environment
     >pip install SpeechRecognition
     >pip install textblob
     >python -m textblob.download_corpora
+    >pip install selenium
+
+    Download [chrome driver from here](https://sites.google.com/a/chromium.org/chromedriver/downloads)
 
 ## How to run the project
 

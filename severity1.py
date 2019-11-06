@@ -35,7 +35,7 @@ rescue_words = ['rescue', 'stuck', 'flood', 'take', 'save',
 
 # r = sr.Recognizer()
 # r.energy_threshold = 1000
-# r.dynamic_energy_threshold = True # to let it adjust by itself
+# r.dynamic_energy_threshold = True  # to let it adjust by itself
 # mic = sr.Microphone()
 # # To find all possible input devices
 # # for index, name in enumerate(sr.Microphone.list_microphone_names()):
@@ -47,7 +47,7 @@ rescue_words = ['rescue', 'stuck', 'flood', 'take', 'save',
 #     print("Sound Processed")
 
 # try:
-#     isaid = r.recognize_google(audio, language="en-GB")
+#     isaid = r.recognize_google(audio, language="en-IN")
 #     print("You said: " + isaid)
 
 # except sr.UnknownValueError:
@@ -57,12 +57,14 @@ rescue_words = ['rescue', 'stuck', 'flood', 'take', 'save',
 #     print(
 #         "Could not request results from Google Speech Recognition service; {0}".format(e))
 
+isaid = open("isaid.txt", "r").read()
+
 # Note to self: take care of commas or fullstops after the words
 # isaid = "I am from vellore please i need medicine and want to go to the hospital . Please I'm hungry i need food please rescue"
 # isaid = "I am from hyderabad stuck in city with no lights i need food Please rescue"
 # isaid = "I am from hyderabad . i am stuck in city with no lights . i need medicine as i am bleeding"
 # isaid = "I am from hyderabad i have not eaten anything . i am stuck under debris . help"
-isaid = "I am from hyderabad . a building collapsed. many people stuck in the wreck . rescue them . many people have some form of injury"
+# isaid = "I am from hyderabad . a building collapsed. many people stuck in the wreck . rescue them . many people have some form of injury"
 # isaid = "I am from Jhansi . Please i have not eaten anything and need medicine and food and urgently need to go to the hospital"
 
 # Text Blob
@@ -75,18 +77,25 @@ print()
 
 # print Noun phrases
 print("\nNoun Phrases:\n")
-for phrases in blob.noun_phrases:
-    print(phrases)
+if not blob.noun_phrases:
+    print("\n     No Noun phrases found.")
+else:
+    for phrases in blob.noun_phrases:
+        print(phrases)
 print()
 
 # Lemmatization
+count = 0
 print("Lemmatization of words(Verbs and Adjectives only):")
 for words, tags in blob.tags:
     if tags == "VB":  # Verb
+        count += 1
         print(words + " --> " + words.lemmatize("v"))
     elif tags == "JJ":  # Adjective
+        count += 1
         print(words + " --> " + words.lemmatize("a"))
-
+if count == 0:
+    print("\n     No Verb or Adjective found.")
 
 list_of_words = isaid.split(" ")
 said_cities = []
@@ -102,8 +111,7 @@ for word in list_of_words:
     if word.lower() in city_list:
         said_cities.append(word)
 
-# This is for the case user keeps repeating the city name due to stress
-# like help needed at ghaziabad. I am from ghaziabad. this problem happened....
+# This is for the case user keeps repeating the city name due to stress like help needed at ghaziabad. I am from ghaziabad. this problem happened....
 
 said_cities = set(said_cities)
 
