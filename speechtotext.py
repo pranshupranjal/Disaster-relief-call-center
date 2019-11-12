@@ -5,10 +5,11 @@ from selenium import webdriver
 url = "https://speechnotes.co/"
 
 options = Options()
+# Wherever your chrome is installed
 options.binary_location = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
 
 # path of web driver
-path = r'C:\\Users\\pranjal\\Desktop\\git-waala\\Disaster-relief-call-center\\chromedriver_win32_v78\\Chromedriver'
+path = r'C:\\Users\\pranjal\\Desktop\\git-waala\\Disaster-relief-call-center\\data sources\\chrome driver\\chromedriver_win32_v78\\Chromedriver'
 driver = webdriver.Chrome(chrome_options=options, executable_path=path)
 
 # provide the url
@@ -35,13 +36,13 @@ time.sleep(5)
 ctext = driver.find_element_by_id('results_box').get_attribute('value')
 
 # for debugging save the instance the textarea was scraped
-driver.save_screenshot('WebsiteScreenShot.png')
+driver.save_screenshot('processed_data/Scrapedatthisinstance.png')
 
 print("\nYou said: \n")
 print(ctext)
 
 driver.close()
 
-f = open("isaid.txt", "w")
+f = open("processed_data/isaid.txt", "w")
 f.write(ctext)
 f.close()

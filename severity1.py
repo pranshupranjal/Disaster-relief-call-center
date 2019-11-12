@@ -31,7 +31,7 @@ medical_words = ['medicine', 'hospital', 'bandages', 'dead', 'splint',
 rescue_words = ['rescue', 'stuck', 'flood', 'take', 'save',
                 'emergency', 'injury', 'survivor', 'dead', 'wreck', 'cyclone', 'landslide']
 
-# Speech to Text portion
+# Speech to Text portion Method 1
 
 # r = sr.Recognizer()
 # r.energy_threshold = 1000
@@ -57,14 +57,16 @@ rescue_words = ['rescue', 'stuck', 'flood', 'take', 'save',
 #     print(
 #         "Could not request results from Google Speech Recognition service; {0}".format(e))
 
-isaid = open("isaid.txt", "r").read()
+# Speech to Text Method 2
+
+isaid = open("processed_data/isaid.txt", "r").read()
 
 # Note to self: take care of commas or fullstops after the words
 # isaid = "I am from vellore please i need medicine and want to go to the hospital . Please I'm hungry i need food please rescue"
 # isaid = "I am from hyderabad stuck in city with no lights i need food Please rescue"
 # isaid = "I am from hyderabad . i am stuck in city with no lights . i need medicine as i am bleeding"
 # isaid = "I am from hyderabad i have not eaten anything . i am stuck under debris . help"
-# isaid = "I am from hyderabad . a building collapsed. many people stuck in the wreck . rescue them . many people have some form of injury"
+# isaid = "I am from kolkata . a building collapsed. many people stuck in the wreck . rescue them . many people have some form of injury"
 # isaid = "I am from Jhansi . Please i have not eaten anything and need medicine and food and urgently need to go to the hospital"
 
 # Text Blob
@@ -127,7 +129,7 @@ city_freq.to_csv('processed_data/indian_cities.csv', index=False)
 
 # Calculating severity1 for every call and adding in another dataset , for that we have to train for severity 1
 
-help_dataset = pd.read_csv("sev1_training.csv")
+help_dataset = pd.read_csv("data sources/training/sev1_training.csv")
 help_dataset.replace('?', -99999, inplace=True)
 
 # Drop rightmost column for calculating x values and consider the rest of the columns
@@ -167,7 +169,7 @@ severity1 = (clf.predict(parameters))[0]
 print("\nSeverity of this call : " + str(severity1))
 
 # Append this call details (city, severity) to the city_sev1 file
-city_sev1_df = pd.read_csv('city_sev1.csv')
+city_sev1_df = pd.read_csv('processed_data/city_sev1.csv')
 index = len(city_sev1_df)
 
 # Considering that the first city mentioned by the user is where he/she resides
@@ -175,4 +177,4 @@ city_sev1_df.loc[index, 'City'] = list(said_cities)[0].lower()
 city_sev1_df.loc[index, 'Severity1'] = severity1
 
 # Push to csv file
-city_sev1_df.to_csv('city_sev1.csv', index=False)
+city_sev1_df.to_csv('processed_data/city_sev1.csv', index=False)

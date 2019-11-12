@@ -18,7 +18,7 @@ from sklearn.model_selection import cross_validate
 # All imports end
 
 # Read Severity1
-severity1_df = pd.read_csv('city_sev1.csv')
+severity1_df = pd.read_csv('processed_data/city_sev1.csv')
 # Read number of calls
 city_frequency = pd.read_csv('processed_data/indian_cities.csv')
 average_sev_list = []
@@ -26,7 +26,7 @@ index = 0
 
 # Training on city_sev2 to find the final severity2
 
-final_severity = pd.read_csv("sev2_training.csv")
+final_severity = pd.read_csv("data sources/training/sev2_training.csv")
 final_severity.replace('?', -99999, inplace=True)
 X = np.array(final_severity[['Number_of_calls', 'Severity1']])
 # print(X)
@@ -54,22 +54,22 @@ for i in range(len(city_frequency)):
               " till now : " + str(total_calls))
         # Calculate average
         avg_sev = sev_sum/total_calls
-        city_sev2_df = pd.read_csv('city_sev2.csv')
+        city_sev2_df = pd.read_csv('processed_data/city_sev2.csv')
 
         city_sev2_df.loc[index, 'City'] = c
         city_sev2_df.loc[index,
                          'Number_of_calls'] = city_frequency['number'][i]
         city_sev2_df.loc[index, 'Severity1'] = avg_sev
 
-        city_sev2_df.to_csv('city_sev2.csv', index=False)
+        city_sev2_df.to_csv('processed_data/city_sev2.csv', index=False)
 
         index = index + 1
         average_sev_list.append(avg_sev)
 
 # Predicting final severity2 and adding it into new csv file with city
 
-final_prediction = pd.read_csv('city_sev2.csv')
-analysis_df = pd.read_csv('analysis.csv')
+final_prediction = pd.read_csv('processed_data/city_sev2.csv')
+analysis_df = pd.read_csv('processed_data/analysis.csv')
 index = 0
 # print("Final prediction of the cities ")
 
@@ -84,7 +84,7 @@ for j in range(len(final_prediction)):
 
     analysis_df.loc[index, 'City'] = final_prediction['City'][j]
     analysis_df.loc[index, 'Urgency'] = severity2
-    analysis_df.to_csv('analysis.csv', index=False)
+    analysis_df.to_csv('processed_data/analysis.csv', index=False)
     index = index + 1
 
 print("\nRefer to analysis.csv to find the Urgency of places after all the calls are made. ")
